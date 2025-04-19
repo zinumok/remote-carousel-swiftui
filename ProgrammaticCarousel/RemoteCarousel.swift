@@ -87,13 +87,17 @@ struct RemoteCarousel: View {
 struct Plugin: View {
     @State private var selectedPage: Int = 0
     @State private var items: Int = 10
-    @State private var customIndex: Int = 0
+
+    @State private var carouselCallbackCurrentPage: Int = 0
+    @State private var carouselCallbackTotal: Int = 0
 
     var body: some View {
         VStack {
             RemoteCarousel(externalIndex: $selectedPage)
                 .onPaginating { current, total in
                     print("📘 Página atual: \(current) de \(total)")
+                    carouselCallbackCurrentPage = current
+                    carouselCallbackTotal = total
                 }
 
             HStack(alignment: .center) {
@@ -105,6 +109,8 @@ struct Plugin: View {
                 Button("Next") { navigate(direction: .next) }
                 .buttonStyle(.borderedProminent)
             }.padding(.top, 40)
+
+            Text("📘 Page \(carouselCallbackCurrentPage) of \(carouselCallbackTotal)")
         }
         .padding()
     }
