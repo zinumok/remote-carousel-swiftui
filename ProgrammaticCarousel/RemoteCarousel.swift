@@ -44,9 +44,9 @@ private struct PaginationPreferenceKey: PreferenceKey {
 }
 
 extension View {
-    func onPaginating(perform action: @escaping (_ currentPage: Int, _ totalPages: Int) -> Void) -> some View {
+    func onPaginating(perform action: @escaping (PaginationInfo) -> Void) -> some View {
         self.onPreferenceChange(PaginationPreferenceKey.self) { info in
-            action(info.currentPage, info.totalPages)
+            action(info)
         }
     }
 }
@@ -94,10 +94,10 @@ struct Plugin: View {
     var body: some View {
         VStack {
             RemoteCarousel(externalIndex: $selectedPage)
-                .onPaginating { current, total in
-                    print("📘 Página atual: \(current) de \(total)")
-                    carouselCallbackCurrentPage = current
-                    carouselCallbackTotal = total
+                .onPaginating { info in
+                    print("📘 Página atual: \(info.currentPage + 1) de \(info.totalPages)")
+                    carouselCallbackCurrentPage = info.currentPage
+                    carouselCallbackTotal = info.totalPages
                 }
 
             HStack(alignment: .center) {
@@ -110,7 +110,7 @@ struct Plugin: View {
                 .buttonStyle(.borderedProminent)
             }.padding(.top, 40)
 
-            Text("📘 Page \(carouselCallbackCurrentPage) of \(carouselCallbackTotal)")
+            Text("📘 Page \(carouselCallbackCurrentPage + 1) of \(carouselCallbackTotal)")
         }
         .padding()
     }
